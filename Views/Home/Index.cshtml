@@ -1,0 +1,66 @@
+﻿@model List<cartonBingo>;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bienvenido al juego del BINGO</h1>
+    <h4>Presione el botón "Lanzar Bolilla para comenzar"</h4>
+</div>
+
+<div>
+    <h1>@($"Bolilla número: {ViewData["Bolilla"]}")</h1>
+    <a class="btn btn-info" asp-action="Sortear">Lanzar Bolilla</a>
+    @if (ViewBag.Sorteos == 90)
+    {
+        <h3 class="text-warning text-center">
+            @ViewData["Mensaje"]
+        </h3>
+    }
+</div>
+
+
+<h2>Estos son tus cartones de Bingo</h2>
+<div class="col-sm-12">
+    @foreach (var carton in Model)
+    {
+        if (carton.Coincide1 == 15 || carton.Coincide2 == 15 || carton.Coincide3 == 15 || carton.Coincide4 == 15) // En caso que los aciertos de cualquier carton lleguen a 15
+        {
+            <h2 class="text-center text-black">
+                BINGO!!
+            </h2>
+
+            <h4 class="text-center">El carton ganador es el carton N° @ViewBag.CartonGanador</h4> // Muestro el numero de carton ganador
+        }
+        <table class="table table-bordered bg-info text-center mb-4">
+            <tbody>
+                @for (int f = 0; f < 3; f++)
+                {
+                    <tr>
+                        @for (int c = 0; c < 9; c++) // Recorro filas y columnas 
+                        {
+
+                            if (carton.CartonNumeros[f, c] == 0) // Si el valor de la posicion es 0 lo pinto del mismo color que el fondo del carton para que no se vea 
+                            {
+                                <td class="text-info">@carton.CartonNumeros[f, c]</td>
+                            }
+                            else
+                            {
+                                if (carton.BolillasAModelo.Contains(carton.CartonNumeros[f, c])) // Si la bolilla coincide con el numero del carton en la posicion actual, esta se pinta de rojo
+                                {
+                                    <td class="bg-danger">@carton.CartonNumeros[f, c]</td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @carton.CartonNumeros[f, c]
+                                    </td>
+                                }
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>       
+    }
+</div>
